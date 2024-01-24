@@ -36,3 +36,17 @@ class Solution:
 
     solve(heads, legs)
 
+#task4
+class Solution:
+    nums = []
+    def filter_prime(nums):
+        ans = []
+        for num in nums:
+            for i in range(2, num/2):
+                is_prime = True
+
+                if num%i == 0:
+                    is_prime = False
+            if (is_prime):
+                ans.append(num)
+        return ans
