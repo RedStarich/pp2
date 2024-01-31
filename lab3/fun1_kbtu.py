@@ -110,3 +110,93 @@ class Solution:
         print("True")
     else:
         print("False")
+
+#task 8
+class Solution:
+    def spy_game(nums):
+        for i in range(2, len(nums)):
+            if nums[i-2]==0 and nums[i-1]==0 and nums[i]==7:
+                return True
+
+    input_numbers = input("Enter numbers separated by spaces: ")
+    number_strings = input_numbers.split()
+    nums = [int(num) for num in number_strings]
+    if spy_game(nums):
+        print("True")
+    else:
+        print("False")
+
+#task 9
+import math
+class Solution:
+    def find_volume(r):
+        volume = 4/3 * math.pi * r**3
+        print(volume)
+
+    r = input("Enter the radius: ")
+    r = int(r)
+    find_volume(r)
+
+#task 10
+class Solution:
+    def unique(nums):
+        nums.sort()
+        prev = nums[0]
+        ans = [prev]
+        for i in range(len(nums)):
+            if prev != nums[i]:
+                ans.append(nums[i])
+                prev = nums[i]
+
+        print(ans)
+
+
+    input_numbers = input("Enter numbers separated by spaces: ")
+    number_strings = input_numbers.split()
+    nums = [int(num) for num in number_strings]
+    unique(nums)
+
+#task 11
+class Solution:
+    def is_palindrome(phrase):
+        return phrase == phrase[::-1]
+
+    phrase = input("Enter the phrase: ")
+    if is_palindrome(phrase):
+        print("it is palindrome")
+    else:
+        print("it is not palindrome")
+
+#task 12
+class Solution:
+    def histogram(nums):
+        for num in nums:
+            print('*'*num)
+    
+    input_numbers = input("Enter numbers separated by spaces: ")
+    number_strings = input_numbers.split()
+    nums = [int(num) for num in number_strings]
+    histogram(nums)
+
+from random import randrange
+class Solution:
+    def guessr():
+        name = input("Hello! What is your name? ")
+        count = 1
+        print("Well, {}, I am thinking of a number between 1 and 20".format(name))
+        target = randrange(1, 20)
+        guess = input("Take a guess ")
+        guess = int(guess)
+
+        while guess != target:
+            if guess < target:
+                print("Your guess is too low.")
+                guess = int(input("Take a guess."))
+            elif guess > target:
+                print("Your guess is too high.")
+                guess = int(input("Take a guess."))
+            else:
+                break
+            count += 1
+        print("Good job, {}! You guessed my number in {} guesses!".format(name, count))
+    guessr()
