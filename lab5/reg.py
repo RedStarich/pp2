@@ -23,9 +23,11 @@ string = input("Enter the sentence: ")
 # x = re.split('_+', string)
 # x = x[0].lower() + "".join(map(lambda a: a.title(), x[1:]))
 #8
-x = re.split("[A-Z]", string)
-x = " ".join(x)
+# x = re.split("[A-Z]", string)
+# x = " ".join(x)
 #9
-x = re.split("[A-Z]", string)
-x = " ".join(x)
+# x = re.split("[A-Z]", string)
+# x = " ".join(x)
+#10
+x =  re.sub(r'_([a-z])', lambda match: match.group(1).upper(), string)
 print(x)
