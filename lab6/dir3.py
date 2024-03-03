@@ -1,6 +1,6 @@
 import os
 
-path1 = input("Path 1: ")
+path1 = input("Path: ")
 
 if os.access(path1, os.F_OK):
     print(f"Path {path1} exist")
