@@ -1,11 +1,13 @@
-from string import ascii_uppercase
 import os
 
-new_path = "C:\Users\Admin\Desktop\desctop\KBTU 1\codewars\pp2\lab6"
-if not os.access(new_path, os.F_OK):
-    os.makedirs(new_path)
+current_directory = os.getcwd()
+folder_path = os.path.join(current_directory, "text_files")
+os.makedirs(folder_path, exist_ok=True)
 
-for letter in ascii_uppercase:
-    f = open(f"{new_path}\\{letter}.txt", "w")
-    f.write(f"This is {letter}'s txt file")
-    f.close()
+for i in range(26):
+    letter = chr(ord('A') + i)
+    file_name = f"{letter}.txt"
+    file_path = os.path.join(folder_path, file_name)
+
+    with open(file_path, 'w') as file:
+        file.write(f"Content for file {file_name}")
