@@ -2,24 +2,30 @@ import pygame
 import random
 pygame.init()
 
-W, H = 1200, 800
+W, H = 1200, 700
 FPS = 60
 
+#screen
 screen = pygame.display.set_mode((W, H), pygame.RESIZABLE)
 clock = pygame.time.Clock()
 done = False
 bg = (0, 0, 0)
 
 #paddle
-paddleW = 150
+paddleW = 400
 paddleH = 25
 paddleSpeed = 20
-paddle = pygame.Rect(W // 2 - paddleW // 2, H - paddleH - 30, paddleW, paddleH)
+paddle_x = W//2 - paddleW//2
+
+paddle = pygame.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
 
 
 #Ball
 ballRadius = 20
 ballSpeed = 6
+INC_SPEED = pygame.USEREVENT + 1
+pygame.time.set_timer(INC_SPEED, 1000)
+
 ball_rect = int(ballRadius * 2 ** 0.5)
 ball = pygame.Rect(random.randrange(ball_rect, W - ball_rect), H // 2, ball_rect, ball_rect)
 dx, dy = 1, -1
@@ -34,6 +40,7 @@ game_score_rect.center = (210, 20)
 #Catching sound
 collision_sound = pygame.mixer.Sound('audio/catch.mp3')
 
+#detect collision
 def detect_collision(dx, dy, ball, rect):
     if dx > 0:
         delta_x = ball.right - rect.left
@@ -59,7 +66,7 @@ block_list = [pygame.Rect(10 + 120 * i, 50 + 70 * j,
 color_list = [(random.randrange(0, 255), 
     random.randrange(0, 255),  random.randrange(0, 255))
               for i in range(10) for j in range(4)] 
-print(block_list)
+
 #Game over Screen
 losefont = pygame.font.SysFont('comicsansms', 40)
 losetext = losefont.render('Game Over', True, (255, 255, 255))
@@ -75,6 +82,11 @@ wintextRect.center = (W // 2, H // 2)
 
 while not done:
     for event in pygame.event.get():
+        if event.type == INC_SPEED:
+            ballSpeed += 0.5
+            paddleW -= 10 if paddleW > 50 else 0
+            paddle = pygame.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
+    
         if event.type == pygame.QUIT:
             done = True
 
@@ -91,6 +103,10 @@ while not done:
     #Ball movement
     ball.x += ballSpeed * dx
     ball.y += ballSpeed * dy
+
+    
+
+
 
     #Collision left 
     if ball.centerx < ballRadius or ball.centerx > W - ballRadius:
@@ -123,13 +139,15 @@ while not done:
     elif not len(block_list):
         screen.fill((255,255, 255))
         screen.blit(wintext, wintextRect)
-    # print(pygame.K_LEFT)
+
     #Paddle Control
     key = pygame.key.get_pressed()
     if key[pygame.K_LEFT] and paddle.left > 0:
+        paddle_x -= paddleSpeed
         paddle.left -= paddleSpeed
     if key[pygame.K_RIGHT] and paddle.right < W:
         paddle.right += paddleSpeed
+        paddle_x += paddleSpeed
 
 
     pygame.display.flip()
