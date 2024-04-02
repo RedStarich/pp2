@@ -1,13 +1,13 @@
-import pygame 
+import pygame as pg 
 import random
-pygame.init()
+pg.init()
 
 W, H = 1200, 700
 FPS = 60
 
 #screen
-screen = pygame.display.set_mode((W, H), pygame.RESIZABLE)
-clock = pygame.time.Clock()
+screen = pg.display.set_mode((W, H), pg.RESIZABLE)
+clock = pg.time.Clock()
 done = False
 bg = (0, 0, 0)
 
@@ -17,28 +17,28 @@ paddleH = 25
 paddleSpeed = 20
 paddle_x = W//2 - paddleW//2
 
-paddle = pygame.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
+paddle = pg.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
 
 
 #Ball
 ballRadius = 20
 ballSpeed = 6
-INC_SPEED = pygame.USEREVENT + 1
-pygame.time.set_timer(INC_SPEED, 1000)
+INC_SPEED = pg.USEREVENT + 1
+pg.time.set_timer(INC_SPEED, 1000)
 
 ball_rect = int(ballRadius * 2 ** 0.5)
-ball = pygame.Rect(random.randrange(ball_rect, W - ball_rect), H // 2, ball_rect, ball_rect)
+ball = pg.Rect(random.randrange(ball_rect, W - ball_rect), H // 2, ball_rect, ball_rect)
 dx, dy = 1, -1
 
 #Game score
 game_score = 0
-game_score_fonts = pygame.font.SysFont('comicsansms', 40)
+game_score_fonts = pg.font.SysFont('comicsansms', 40)
 game_score_text = game_score_fonts.render(f'Your game score is: {game_score}', True, (0, 0, 0))
 game_score_rect = game_score_text.get_rect()
 game_score_rect.center = (210, 20)
 
 #Catching sound
-collision_sound = pygame.mixer.Sound('audio/catch.mp3')
+collision_sound = pg.mixer.Sound('audio/catch.mp3')
 
 #detect collision
 def detect_collision(dx, dy, ball, rect):
@@ -61,44 +61,51 @@ def detect_collision(dx, dy, ball, rect):
 
 
 #block settings
-block_list = [pygame.Rect(10 + 120 * i, 50 + 70 * j,
-        100, 50) for i in range(10) for j in range (4)]
+strong_blocks = [pg.Rect(120*i, 400, 10, 10) for i in range(10)]
+bonus_blocks = [pg.Rect(10 + 120*i, 120, 110, 50) for i in range(10)]
+
+soft_blocks = [pg.Rect(10 + 120 * i, 50 + 70 * j,
+        100, 50) for i in range(10) for j in range (2, 4)]
 color_list = [(random.randrange(0, 255), 
     random.randrange(0, 255),  random.randrange(0, 255))
               for i in range(10) for j in range(4)] 
 
 #Game over Screen
-losefont = pygame.font.SysFont('comicsansms', 40)
+losefont = pg.font.SysFont('comicsansms', 40)
 losetext = losefont.render('Game Over', True, (255, 255, 255))
 losetextRect = losetext.get_rect()
 losetextRect.center = (W // 2, H // 2)
 
 #Win Screen
-winfont = pygame.font.SysFont('comicsansms', 40)
+winfont = pg.font.SysFont('comicsansms', 40)
 wintext = losefont.render('You win yay', True, (0, 0, 0))
 wintextRect = wintext.get_rect()
 wintextRect.center = (W // 2, H // 2)
 
 
 while not done:
-    for event in pygame.event.get():
+    for event in pg.event.get():
         if event.type == INC_SPEED:
             ballSpeed += 0.5
             paddleW -= 10 if paddleW > 50 else 0
-            paddle = pygame.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
+            paddle = pg.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
     
-        if event.type == pygame.QUIT:
+        if event.type == pg.QUIT:
             done = True
 
     screen.fill(bg)
     
-    # print(next(enumerate(block_list)))
+    # print(next(enumerate(soft_blocks)))
     
-    [pygame.draw.rect(screen, color_list[color], block)
-     for color, block in enumerate (block_list)] #drawing blocks
-    pygame.draw.rect(screen, pygame.Color(255, 255, 255), paddle)
-    pygame.draw.circle(screen, pygame.Color(255, 0, 0), ball.center, ballRadius)
-    # print(next(enumerate (block_list)))
+    [pg.draw.rect(screen, color_list[color], block)
+     for color, block in enumerate (soft_blocks)] #drawing blocks
+    [pg.draw.rect(screen, (255,255,255), block)
+     for block in (strong_blocks)] #drawing blocks
+    [pg.draw.rect(screen, (0,255,0), block)
+     for block in (bonus_blocks)] #drawing blocks
+    pg.draw.rect(screen, pg.Color(255, 255, 255), paddle)
+    pg.draw.circle(screen, pg.Color(255, 0, 0), ball.center, ballRadius)
+    # print(next(enumerate (soft_blocks)))
 
     #Ball movement
     ball.x += ballSpeed * dx
@@ -117,12 +124,25 @@ while not done:
     #Collision with paddle
     if ball.colliderect(paddle) and dy > 0:
         dx, dy = detect_collision(dx, dy, ball, paddle)
-
     #Collision blocks
-    hitIndex = ball.collidelist(block_list)
+    hitIndex = ball.collidelist(soft_blocks)
+    hit_strong = ball.collidelist(strong_blocks)
+    hit_bonus = ball.collidelist(bonus_blocks)
+
+    if hit_strong != -1:
+        dx, dy = detect_collision(dx, dy, ball, hitRect)
+        collision_sound.play()
+
+    if hit_bonus != -1:
+        hitRect = bonus_blocks.pop(hit_bonus)
+        dx, dy = detect_collision(dx, dy, ball, hitRect)
+        game_score += 1
+        ballSpeed /= 1.3
+        collision_sound.play()
+        
 
     if hitIndex != -1:
-        hitRect = block_list.pop(hitIndex)
+        hitRect = soft_blocks.pop(hitIndex)
         hitColor = color_list.pop(hitIndex)
         dx, dy = detect_collision(dx, dy, ball, hitRect)
         game_score += 1
@@ -136,19 +156,19 @@ while not done:
     if ball.bottom > H:
         screen.fill((0, 0, 0))
         screen.blit(losetext, losetextRect)
-    elif not len(block_list):
+    elif not len(soft_blocks):
         screen.fill((255,255, 255))
         screen.blit(wintext, wintextRect)
 
     #Paddle Control
-    key = pygame.key.get_pressed()
-    if key[pygame.K_LEFT] and paddle.left > 0:
+    key = pg.key.get_pressed()
+    if key[pg.K_LEFT] and paddle.left > 0:
         paddle_x -= paddleSpeed
         paddle.left -= paddleSpeed
-    if key[pygame.K_RIGHT] and paddle.right < W:
+    if key[pg.K_RIGHT] and paddle.right < W:
         paddle.right += paddleSpeed
         paddle_x += paddleSpeed
 
 
-    pygame.display.flip()
+    pg.display.flip()
     clock.tick(FPS)
