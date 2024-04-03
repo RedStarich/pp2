@@ -38,10 +38,36 @@ DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Game")
 
 #Coins
-class Coin(pygame.sprite.Sprite):
+class Coin1(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.image.load("Coin.png")
+        self.image = pygame.image.load("coin1.png")
+        self.rect = self.image.get_rect()
+        self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
+        
+    def move(self):
+        self.rect.move_ip(0,SPEED)
+        if (self.rect.top > 600):
+            self.rect.top = 0
+            self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
+
+class Coin2(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("coin2.png")
+        self.rect = self.image.get_rect()
+        self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
+        
+    def move(self):
+        self.rect.move_ip(0,SPEED)
+        if (self.rect.top > 600):
+            self.rect.top = 0
+            self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
+
+class Coin3(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = pygame.image.load("coin3.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
         
@@ -91,18 +117,22 @@ class Player(pygame.sprite.Sprite):
 #Setting up Sprites        
 P1 = Player()
 E1 = Enemy()
-C1 = Coin()
- 
+C1 = Coin1()
+C2 = Coin2()
+C3 = Coin3()
+
 #Creating Sprites Groups
 enemies = pygame.sprite.Group()
 enemies.add(E1)
-coins = pygame.sprite.Group()
-coins.add(C1)
+coins1 = pygame.sprite.Group()
+coins1.add(C1)
+
 all_sprites = pygame.sprite.Group()
 all_sprites.add(P1)
 all_sprites.add(E1)
 all_sprites.add(C1)
- 
+
+
 #Adding a new User event 
 INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 1000)
@@ -111,9 +141,7 @@ pygame.time.set_timer(INC_SPEED, 1000)
 while True:
        
     #Cycles through all events occurring  
-    for event in pygame.event.get():
-        if event.type == INC_SPEED:
-              SPEED += 0.5     
+    for event in pygame.event.get():    
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
@@ -146,14 +174,34 @@ while True:
           sys.exit()   
 
     #To be run if collision occurs between Player and Coin
-    if pygame.sprite.spritecollideany(P1, coins):
-        pygame.mixer.Sound('crash.wav').play()
-        BONUS += 1
-        for co in coins:
-            co.kill()
-        C1 = Coin()
-        coins.add(C1)  
-        all_sprites.add(C1)
+    if pygame.sprite.spritecollideany(P1, coins1):
+        #if a player collects N number of bonus score or more, the speed becomes proportional to the score
+        if BONUS >= 500:
+            SPEED = BONUS/100 
+        pygame.mixer.Sound('catch.mp3').play()
+        coin = pygame.sprite.spritecollideany(P1, coins1)  # Get the collided coin
+        if coin:
+            if isinstance(coin, Coin1):
+                BONUS += 10
+            elif isinstance(coin, Coin2):
+                BONUS += 50
+            elif isinstance(coin, Coin3):
+                BONUS += 100
+            coin.kill()  # Remove the collided coin
+            # Generate new coin that hasn't been collected yet and doesn't spawn inside the player
+            available_coins = [C1, C2, C3]
+            collected_coins = [sprite for sprite in coins1 if sprite.rect == coin.rect]
+            available_coins = [coin for coin in available_coins if coin not in collected_coins]
+            if available_coins:
+                new_coin = random.choice(available_coins)
+                new_coin.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
+                # Check if new coin collides with the player
+                while pygame.sprite.spritecollideany(new_coin, all_sprites):
+                    new_coin.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
+                coins1.add(new_coin)
+                all_sprites.add(new_coin)
+
+
 
     
     #screen update
