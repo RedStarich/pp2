@@ -12,8 +12,9 @@ done = False
 bg = (0, 0, 0)
 
 #paddle
-paddleW = 400
+paddleW = 1400
 paddleH = 25
+initialpaddlespeed = 20
 paddleSpeed = 20
 paddle_x = W//2 - paddleW//2
 
@@ -21,8 +22,9 @@ paddle = pg.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
 
 
 #Ball
-ballRadius = 20
+ballRadius = 30
 ballSpeed = 6
+initialballspeed = 6
 INC_SPEED = pg.USEREVENT + 1
 pg.time.set_timer(INC_SPEED, 1000)
 
@@ -42,33 +44,36 @@ collision_sound = pg.mixer.Sound('audio/catch.mp3')
 
 #detect collision
 def detect_collision(dx, dy, ball, rect):
-    if dx > 0:
+    if dx > 5:
         delta_x = ball.right - rect.left
     else:
         delta_x = rect.right - ball.left
-    if dy > 0:
+    if dy > 5:
         delta_y = ball.bottom - rect.top
     else:
         delta_y = rect.bottom - ball.top
 
-    if abs(delta_x - delta_y) < 10:
+    if abs(delta_x - delta_y) < 50:
         dx, dy = -dx, -dy
-    if delta_x > delta_y:
+        pg.time.delay(10)
+    if delta_x >= delta_y:
+        pg.time.delay(10)
         dy = -dy
-    elif delta_y > delta_x:
+    elif delta_y >= delta_x:
         dx = -dx
+        pg.time.delay(10)
     return dx, dy
 
 
 #block settings
-strong_blocks = [pg.Rect(120*i, 400, 10, 10) for i in range(10)]
+strong_blocks = [pg.Rect(120*i, 400, 50, 5) for i in range(2, 8)]
 bonus_blocks = [pg.Rect(10 + 120*i, 120, 110, 50) for i in range(10)]
 
 soft_blocks = [pg.Rect(10 + 120 * i, 50 + 70 * j,
         100, 50) for i in range(10) for j in range (2, 4)]
 color_list = [(random.randrange(0, 255), 
     random.randrange(0, 255),  random.randrange(0, 255))
-              for i in range(10) for j in range(4)] 
+              for i in range(10) for j in range(1, 4)] 
 
 #Game over Screen
 losefont = pg.font.SysFont('comicsansms', 40)
@@ -82,16 +87,32 @@ wintext = losefont.render('You win yay', True, (0, 0, 0))
 wintextRect = wintext.get_rect()
 wintextRect.center = (W // 2, H // 2)
 
+#pause function
+pause = False
+
 
 while not done:
     for event in pg.event.get():
-        if event.type == INC_SPEED:
+        if event.type == INC_SPEED and not pause:
             ballSpeed += 0.5
             paddleW -= 10 if paddleW > 50 else 0
             paddle = pg.Rect(paddle_x, H - paddleH - 30, paddleW, paddleH)
     
         if event.type == pg.QUIT:
             done = True
+
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_p:
+                if not pause:  # If the game is not already paused
+                    pause = True
+                    ballSpeed = 0
+                    paddleSpeed = 0
+                else:  # If the game is already paused
+                    pause = False
+                    ballSpeed = initialballspeed  # Restore original ball speed
+                    paddleSpeed = initialpaddlespeed  # Restore original paddle speed
+
+
 
     screen.fill(bg)
     
@@ -114,12 +135,11 @@ while not done:
     
 
 
-
-    #Collision left 
-    if ball.centerx < ballRadius or ball.centerx > W - ballRadius:
+    #Collision left
+    if ball.centerx < ballRadius-5 or ball.centerx > W - ballRadius+5:
         dx = -dx
     #Collision top
-    if ball.centery < ballRadius + 50: 
+    if ball.centery < ballRadius + 55: 
         dy = -dy
     #Collision with paddle
     if ball.colliderect(paddle) and dy > 0:
