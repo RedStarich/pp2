@@ -132,7 +132,159 @@ class Quadr(Figure):
         pygame.draw.rect(self.layer, self.color, self.rect, self.d_size)
         self.add_to_layers()
 
+class R_Triangle(Figure):
+    enable = False
 
+    def __init__(self, color : Tuple[int, int, int], screen : pygame.surface.Surface, d_size : int):
+        super().__init__(color, screen, d_size)
+        self.p_a = None
+
+    def draw(self, mouse_pressed : bool):
+        if self.drawn and not self.added_to_layers:
+            self.draw_on_layer()
+            self.added_to_layers = True
+            return
+
+        if not mouse_pressed and self.p_a != None:
+            self.drawn = True
+            return
+
+        pos = pygame.mouse.get_pos()
+
+        if self.p_a == None:
+            self.p_a = pos
+        
+        #get the difference between the starting position and the current mouse position
+        x = min(self.p_a[0], pos[0])
+        y = min(self.p_a[1], pos[1])
+        
+        #setting the QW and the QH of the rect
+        QW = max(pos[0], self.p_a[0]) - x
+        QH = max(pos[1], self.p_a[1]) - y
+
+        self.rect = pygame.Rect(x, y, QW, QH)   #adjustable rect
+        pygame.draw.rect(self.screen, self.color, self.rect, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
+
+    def draw_on_layer(self):
+        #drawing the current instance on its corresponding layer, and then adding it to the parent class' layers list
+        pygame.draw.rect(self.layer, self.color, self.rect, self.d_size)
+        self.add_to_layers()
+
+class Rhombus(Figure):
+    enable = False
+
+    def __init__(self, color : Tuple[int, int, int], screen : pygame.surface.Surface, d_size : int):
+        super().__init__(color, screen, d_size)
+        self.p_a = None
+
+    def draw(self, mouse_pressed : bool):
+        if self.drawn and not self.added_to_layers:
+            self.draw_on_layer()
+            self.added_to_layers = True
+            return
+
+        if not mouse_pressed and self.p_a != None:
+            self.drawn = True
+            return
+
+        pos = pygame.mouse.get_pos()
+
+        if self.p_a == None:
+            self.p_a = pos
+        
+        #get the difference between the starting position and the current mouse position
+        x = min(self.p_a[0], pos[0])
+        y = min(self.p_a[1], pos[1])
+        
+        #setting the QW and the QH of the rect
+        QW = max(pos[0], self.p_a[0]) - x
+        QH = max(pos[1], self.p_a[1]) - y
+
+        self.rect = pygame.Rect(x, y, QW, QH)   #adjustable rect
+        pygame.draw.rect(self.screen, self.color, self.rect, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
+
+    def draw_on_layer(self):
+        #drawing the current instance on its corresponding layer, and then adding it to the parent class' layers list
+        pygame.draw.polygon(self.layer, self.color, self.rect, self.d_size)
+        self.add_to_layers()
+
+
+class E_Triangle(Figure):
+    enable = False
+
+    def __init__(self, color : Tuple[int, int, int], screen : pygame.surface.Surface, d_size : int):
+        super().__init__(color, screen, d_size)
+        self.p_a = None
+
+    def draw(self, mouse_pressed : bool):
+        if self.drawn and not self.added_to_layers:
+            self.draw_on_layer()
+            self.added_to_layers = True
+            return
+
+        if not mouse_pressed and self.p_a != None:
+            self.drawn = True
+            return
+
+        pos = pygame.mouse.get_pos()
+
+        if self.p_a == None:
+            self.p_a = pos
+        
+        #get the difference between the starting position and the current mouse position
+        x = min(self.p_a[0], pos[0])
+        y = min(self.p_a[1], pos[1])
+        
+        #setting the QW and the QH of the rect
+        QW = max(pos[0], self.p_a[0]) - x
+        QH = max(pos[1], self.p_a[1]) - y
+
+        self.rect = pygame.Rect(x, y, QW, QH)   #adjustable rect
+        pygame.draw.rect(self.screen, self.color, self.rect, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
+
+    def draw_on_layer(self):
+        #drawing the current instance on its corresponding layer, and then adding it to the parent class' layers list
+        pygame.draw.rect(self.layer, self.color, self.rect, self.d_size)
+        self.add_to_layers()
+
+
+class Square(Figure):
+    enable = False
+
+    def __init__(self, color : Tuple[int, int, int], screen : pygame.surface.Surface, d_size : int):
+        super().__init__(color, screen, d_size)
+        self.p_a = None
+
+    def draw(self, mouse_pressed : bool):
+        if self.drawn and not self.added_to_layers:
+            self.draw_on_layer()
+            self.added_to_layers = True
+            return
+
+        if not mouse_pressed and self.p_a != None:
+            self.drawn = True
+            return
+
+        pos = pygame.mouse.get_pos()
+
+        if self.p_a == None:
+            self.p_a = pos
+        
+        #get the difference between the starting position and the current mouse position
+        x = min(self.p_a[0], pos[0])
+        y = min(self.p_a[1], pos[1])
+        
+        #setting the QW and the QH of the rect
+        QW = max(pos[0], self.p_a[0]) - x
+        QH = max(pos[1], self.p_a[1]) - y
+
+        self.rect = pygame.Rect(x, y, QW, QW)   #adjustable rect
+        pygame.draw.rect(self.screen, self.color, self.rect, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
+
+    def draw_on_layer(self):
+        #drawing the current instance on its corresponding layer, and then adding it to the parent class' layers list
+        pygame.draw.rect(self.layer, self.color, self.rect, self.d_size)
+        self.add_to_layers()
 
 class Rubber(Figure):
 
