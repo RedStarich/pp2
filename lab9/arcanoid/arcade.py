@@ -211,17 +211,21 @@ def options():
 
         screen.fill("white")
 
+        OPTIONS_TEXT3 = get_font(75).render("HOW TO PLAY", True, "Black")
+        OPTIONS_RECT3 = OPTIONS_TEXT3.get_rect(center=(640, 120))
+
         OPTIONS_TEXT = get_font(45).render("Paddle: left & right key.", True, "Black")
         OPTIONS_TEXT2 = get_font(45).render("Pause on/off: press 'P'", True, "Black")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 20))
-        OPTIONS_RECT2 = OPTIONS_TEXT2.get_rect(center=(640, 120))
+        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 290))
+        OPTIONS_RECT2 = OPTIONS_TEXT2.get_rect(center=(640, 390))
         screen.blit(OPTIONS_TEXT, OPTIONS_RECT)
         screen.blit(OPTIONS_TEXT2, OPTIONS_RECT2)
+        screen.blit(OPTIONS_TEXT3, OPTIONS_RECT3)
 
-        OPTIONS_BACK = Button(image=None, pos=(640, 260), 
-                            text_input="BACK", font=get_font(75), base_color="Black", hovering_color="Green")
-        HARDCORE = Button(image=None, pos=(640, 460), 
-                            text_input="HARDCORE MODE", font=get_font(75), base_color="Black", hovering_color="Green")
+        OPTIONS_BACK = Button(image=None, pos=(200, 600), 
+                            text_input="BACK", font=get_font(25), base_color="Black", hovering_color="Green")
+        HARDCORE = Button(image=None, pos=(1000, 600), 
+                            text_input="HARDCORE MODE", font=get_font(30), base_color="Black", hovering_color="Green")
 
         OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
         OPTIONS_BACK.update(screen)
