@@ -162,12 +162,12 @@ class R_Triangle(Figure):
         QW = max(pos[0], self.p_a[0]) - x
         QH = max(pos[1], self.p_a[1]) - y
 
-        self.rect = pygame.Rect(x, y, QW, QH)   #adjustable rect
-        pygame.draw.rect(self.screen, self.color, self.rect, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
+        self.polygon = ((x,y), (x+QW, y), (x, y+QH))   #adjustable rect
+        pygame.draw.polygon(self.screen, self.color, self.polygon, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
 
     def draw_on_layer(self):
         #drawing the current instance on its corresponding layer, and then adding it to the parent class' layers list
-        pygame.draw.rect(self.layer, self.color, self.rect, self.d_size)
+        pygame.draw.polygon(self.layer, self.color, self.polygon, self.d_size)
         self.add_to_layers()
 
 class Rhombus(Figure):
@@ -200,12 +200,12 @@ class Rhombus(Figure):
         QW = max(pos[0], self.p_a[0]) - x
         QH = max(pos[1], self.p_a[1]) - y
 
-        self.rect = pygame.Rect(x, y, QW, QH)   #adjustable rect
-        pygame.draw.rect(self.screen, self.color, self.rect, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
+        self.polygon = ((x,y), (x-QW//2, y-QH//2), (x, y-QH), (x+QW//2, y-QH//2))   #adjustable rect
+        pygame.draw.polygon(self.screen, self.color, self.polygon)   #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
 
     def draw_on_layer(self):
         #drawing the current instance on its corresponding layer, and then adding it to the parent class' layers list
-        pygame.draw.polygon(self.layer, self.color, self.rect, self.d_size)
+        pygame.draw.polygon(self.screen, self.color, self.polygon)
         self.add_to_layers()
 
 
@@ -239,12 +239,12 @@ class E_Triangle(Figure):
         QW = max(pos[0], self.p_a[0]) - x
         QH = max(pos[1], self.p_a[1]) - y
 
-        self.rect = pygame.Rect(x, y, QW, QH)   #adjustable rect
-        pygame.draw.rect(self.screen, self.color, self.rect, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
+        self.polygon = ((x,y), (x-QW, y+QH), (x+QW, y+QH))   #adjustable rect
+        pygame.draw.polygon(self.screen, self.color, self.polygon, self.d_size)    #when we are in the adjusting/drawing/setting size mode we draw the rect on the screen, and only when we finished doing so, we draw everything on the corresponding layer
 
     def draw_on_layer(self):
         #drawing the current instance on its corresponding layer, and then adding it to the parent class' layers list
-        pygame.draw.rect(self.layer, self.color, self.rect, self.d_size)
+        pygame.draw.polygon(self.layer, self.color, self.polygon, self.d_size)
         self.add_to_layers()
 
 
