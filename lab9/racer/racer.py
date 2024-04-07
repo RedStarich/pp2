@@ -30,6 +30,7 @@ font_small = pygame.font.SysFont("Verdana", 20)
 game_over = font.render("Game Over", True, BLACK)
 restart_msg = font.render("Press 'space' to restart", True, BLACK)
  
+#load background road
 background = pygame.image.load("Road.png")
  
 #Create a white screen 
@@ -38,19 +39,21 @@ DISPLAYSURF.fill(WHITE)
 pygame.display.set_caption("Game")
 
 #Coins
+#Coin 10 tenge
 class Coin1(pygame.sprite.Sprite):
+    #generation, spawn
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load("coin1.png")
         self.rect = self.image.get_rect()
         self.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
-        
+    #movement
     def move(self):
         self.rect.move_ip(0,SPEED)
         if (self.rect.top > 600):
             self.rect.top = 0
             self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
-
+#Coin 50 tenge
 class Coin2(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -63,7 +66,7 @@ class Coin2(pygame.sprite.Sprite):
         if (self.rect.top > 600):
             self.rect.top = 0
             self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
-
+#Coin 100 tenge
 class Coin3(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -77,7 +80,7 @@ class Coin3(pygame.sprite.Sprite):
             self.rect.top = 0
             self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
  
-#Enemy
+#Enemy car
 class Enemy(pygame.sprite.Sprite):
       def __init__(self):
         super().__init__() 
@@ -92,21 +95,20 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.top = 0
             self.rect.center = (random.randint(40, SCREEN_WIDTH - 40), 0)
  
-#PLayer
+#PLayer car
 class Player(pygame.sprite.Sprite):
+    #generation, spawn
     def __init__(self):
         super().__init__() 
         self.image = pygame.image.load("Player.png")
         self.rect = self.image.get_rect()
         self.rect.center = (160, 520)
         
+    #movement
+    #left key - turn left
+    #right key - turn right
     def move(self):
-        pressed_keys = pygame.key.get_pressed()
-       #if pressed_keys[K_UP]:
-            #self.rect.move_ip(0, -5)
-       #if pressed_keys[K_DOWN]:
-            #self.rect.move_ip(0,5)
-         
+        pressed_keys = pygame.key.get_pressed()         
         if self.rect.left > 0:
               if pressed_keys[K_LEFT]:
                   self.rect.move_ip(-5, 0)
@@ -133,7 +135,7 @@ all_sprites.add(E1)
 all_sprites.add(C1)
 
 
-#Adding a new User event 
+#Adding custom user event for Speed increment 
 INC_SPEED = pygame.USEREVENT + 1
 pygame.time.set_timer(INC_SPEED, 1000)
  
@@ -200,8 +202,6 @@ while True:
                     new_coin.rect.center = (random.randint(40, SCREEN_WIDTH-40), 0)
                 coins1.add(new_coin)
                 all_sprites.add(new_coin)
-
-
 
     
     #screen update
